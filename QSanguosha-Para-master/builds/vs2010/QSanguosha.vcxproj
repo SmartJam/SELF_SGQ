@@ -673,6 +673,8 @@
     </CustomBuild>
     <ClInclude Include="..\..\src\ui\SkinBank.h" />
     <ClInclude Include="..\..\src\ui\uiUtils.h" />
+    <ClInclude Include="..\..\src\util\CommonUtil.h" />
+    <ClInclude Include="..\..\src\util\Logger.h" />
     <ClInclude Include="GeneratedFiles\ui_cardoverview.h" />
     <ClInclude Include="GeneratedFiles\ui_configdialog.h" />
     <ClInclude Include="GeneratedFiles\ui_connectiondialog.h" />

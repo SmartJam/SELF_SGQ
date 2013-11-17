@@ -1026,5 +1026,11 @@
     <ClInclude Include="..\..\src\ui\uiUtils.h">
       <Filter>ui</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\util\CommonUtil.h">
+      <Filter>util</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\util\Logger.h">
+      <Filter>util</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
