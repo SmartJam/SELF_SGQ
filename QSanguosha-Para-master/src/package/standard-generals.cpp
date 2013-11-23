@@ -1717,7 +1717,8 @@ public:
 	virtual bool triggerable(const ServerPlayer *target) const{
 		return PhaseChangeSkill::triggerable(target)
 			&& target->getPhase() == Player::RoundStart
-			&& target->getMaxHp() == target->getHp();
+			&& target->getMaxHp() == target->getHp()
+			&& target->getMark("shenwei2") == 0;
 	}
 
 	virtual bool onPhaseChange(ServerPlayer *player) const{
