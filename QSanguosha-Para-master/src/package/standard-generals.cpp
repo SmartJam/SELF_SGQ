@@ -8,6 +8,7 @@
 #include "standard-skillcards.h"
 #include "ai.h"
 #include "settings.h"
+#include "Logger.h"
 
 class Jianxiong: public MasochismSkill {
 public:
@@ -1702,6 +1703,74 @@ public:
     }
 };
 
+/////////////////////////////////////////////  test code
+class Shenwei2: public PhaseChangeSkill {
+public:
+   /*
+	* awaken skill
+	* TurnStart£¬if no damage, increase 1 hp limit, then gain skill "longwei"
+	*/
+	Shenwei2(): PhaseChangeSkill("shenwei2") {
+		frequency = Wake;
+	}
+
+	virtual bool triggerable(const ServerPlayer *target) const{
+		return PhaseChangeSkill::triggerable(target)
+			&& target->getPhase() == Player::RoundStart
+			&& target->getMaxHp() == target->getHp();
+	}
+
+	virtual bool onPhaseChange(ServerPlayer *player) const{
+		Room *room = player->getRoom();
+		room->notifySkillInvoked(player, objectName());
+
+		LogMessage log;
+		log.type = "#Shenwei2Wake";
+		log.from = player;
+		log.arg = objectName();
+		room->sendLog(log);
+
+		room->broadcastSkillInvoke(objectName());
+		room->doLightbox("$Shenwei2Animate", 4000);
+
+		room->addPlayerMark(player, "shenwei2");
+		if (room->changeMaxHpForAwakenSkill(player, 1)) {
+			room->acquireSkill(player, "longwei");
+		}
+
+		return false;
+	}
+};
+
+class Longwei: public TriggerSkill {
+public:
+	Longwei(): TriggerSkill("longwei") {
+		events << HpRecover;
+		frequency = Frequent;
+	}
+
+	// draw 2 cards each time you recover 1 HP
+	virtual bool trigger(TriggerEvent , Room *room, ServerPlayer *player, QVariant &data) const{
+		RecoverStruct recover_struct = data.value<RecoverStruct>();
+
+		LOG_INFO << "try to trigger longwei, player:" << player->getGeneralName()
+			<< ", recover:" << recover_struct.who->getGeneralName()
+			<< ", recover.value:" << recover_struct.recover;
+
+		if (recover_struct.who != player) {
+			return false;
+		}
+
+		int recover = recover_struct.recover;
+		for (int i = 0; i < recover; i++) {
+			room->broadcastSkillInvoke(objectName());
+			player->drawCards(2);
+		}
+		return false;
+	}
+};
+/////////////////// test skill end..
+
 TestPackage::TestPackage()
     : Package("test")
 {
@@ -1736,12 +1805,26 @@ TestPackage::TestPackage()
     nobenghuai_dongzhuo->addSkill("roulin");
     nobenghuai_dongzhuo->addSkill("baonue");
 
-    new General(this, "sujiang", "god", 5, true, true);
-    new General(this, "sujiangf", "god", 5, false, true);
+    General* sujiang = new General(this, "sujiang", "god", 5, true, true);
+	sujiang->addSkill("niepan");
+	sujiang->addSkill("duanchang");
+
+    General* sujiangf = new General(this, "sujiangf", "god", 5, false, true);
+	sujiangf->addSkill("longdan");
+	sujiangf->addSkill("paoxiao");
+	sujiangf->addSkill("kuanggu");
+	sujiangf->addSkill("tiandu");
+	sujiangf->addSkill("yiji");
+	sujiangf->addSkill("mashu");
 
     new General(this, "anjiang", "god", 4, true, true, true);
 
-    skills << new SuperMaxCards << new SuperOffensiveDistance << new SuperDefensiveDistance;
+	General* testShenzhaoyun = new General(this, "test_shenzhaoyun", "god", 4, true, false);
+	testShenzhaoyun->addSkill("juejing");
+	testShenzhaoyun->addSkill(new Shenwei2);
+	testShenzhaoyun->addRelateSkill("longwei");
+
+    skills << new SuperMaxCards << new SuperOffensiveDistance << new SuperDefensiveDistance << new Longwei;
 }
 
 ADD_PACKAGE(Test)
