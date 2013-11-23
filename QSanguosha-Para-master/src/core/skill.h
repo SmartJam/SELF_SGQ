@@ -48,6 +48,9 @@ public:
     QString getLimitMark() const;
     QStringList getSources() const;
 
+
+	virtual const char* getSkillTypeName() {return "Skill";}
+
 protected:
     Frequency frequency;
     QString limit_mark;
@@ -74,6 +77,8 @@ public:
     virtual bool isEnabledAtNullification(const ServerPlayer *player) const;
     static const ViewAsSkill *parseViewAsSkill(const Skill *skill);
 
+	virtual const char* getSkillTypeName() {return "ViewAsSkill";}
+
 protected:
     QString response_pattern;
 };
@@ -87,6 +92,8 @@ public:
     virtual bool viewFilter(const QList<const Card *> &selected, const Card *to_select) const;
     virtual const Card *viewAs(const QList<const Card *> &cards) const;
     virtual const Card *viewAs() const = 0;
+
+	virtual const char* getSkillTypeName() {return "ZeroCardViewAsSkill";}
 };
 
 class OneCardViewAsSkill: public ViewAsSkill {
@@ -100,6 +107,8 @@ public:
 
     virtual bool viewFilter(const Card *to_select) const;
     virtual const Card *viewAs(const Card *originalCard) const = 0;
+
+	virtual const char* getSkillTypeName() {return "OneCardViewAsSkill";}
 
 protected:
     QString filter_pattern;
@@ -129,6 +138,8 @@ public:
 
     inline bool isGlobal() const{ return global; }
 
+	virtual const char* getSkillTypeName() {return "TriggerSkill";}
+
 protected:
     const ViewAsSkill *view_as_skill;
     QList<TriggerEvent> events;
@@ -148,6 +159,8 @@ public:
 
     virtual int getPriority() const;
     virtual bool triggerable(const ServerPlayer *target) const;
+
+	virtual const char* getSkillTypeName() {return "ScenarioRule";}
 };
 
 class MasochismSkill: public TriggerSkill {
@@ -158,6 +171,8 @@ public:
 
     virtual bool trigger(TriggerEvent triggerEvent, Room *room, ServerPlayer *player, QVariant &data) const;
     virtual void onDamaged(ServerPlayer *target, const DamageStruct &damage) const = 0;
+
+	virtual const char* getSkillTypeName() {return "MasochismSkill";}
 };
 
 class PhaseChangeSkill: public TriggerSkill {
@@ -168,6 +183,8 @@ public:
 
     virtual bool trigger(TriggerEvent triggerEvent, Room *room, ServerPlayer *player, QVariant &data) const;
     virtual bool onPhaseChange(ServerPlayer *target) const = 0;
+
+	virtual const char* getSkillTypeName() {return "PhaseChangeSkill";}
 };
 
 class DrawCardsSkill: public TriggerSkill {
@@ -178,6 +195,8 @@ public:
 
     virtual bool trigger(TriggerEvent triggerEvent, Room *room, ServerPlayer *player, QVariant &data) const;
     virtual int getDrawNum(ServerPlayer *player, int n) const = 0;
+
+	virtual const char* getSkillTypeName() {return "DrawCardsSkill";}
 
 protected:
     bool is_initial;
@@ -191,6 +210,8 @@ public:
 
     virtual bool trigger(TriggerEvent triggerEvent, Room *room, ServerPlayer *player, QVariant &data) const;
     virtual void onGameStart(ServerPlayer *player) const = 0;
+
+	virtual const char* getSkillTypeName() {return "GameStartSkill";}
 };
 
 class SPConvertSkill: public GameStartSkill {
@@ -201,6 +222,8 @@ public:
 
     virtual bool triggerable(const ServerPlayer *target) const;
     virtual void onGameStart(ServerPlayer *player) const;
+
+	virtual const char* getSkillTypeName() {return "SPConvertSkill";}
 
 private:
     QString from, to;
@@ -214,6 +237,8 @@ public:
     ProhibitSkill(const QString &name);
 
     virtual bool isProhibited(const Player *from, const Player *to, const Card *card, const QList<const Player *> &others = QList<const Player *>()) const = 0;
+
+	virtual const char* getSkillTypeName() {return "ProhibitSkill";}
 };
 
 class DistanceSkill: public Skill {
@@ -223,6 +248,8 @@ public:
     DistanceSkill(const QString &name);
 
     virtual int getCorrect(const Player *from, const Player *to) const = 0;
+
+	virtual const char* getSkillTypeName() {return "DistanceSkill";}
 };
 
 class MaxCardsSkill: public Skill {
@@ -233,6 +260,8 @@ public:
 
     virtual int getExtra(const Player *target) const;
     virtual int getFixed(const Player *target) const;
+
+	virtual const char* getSkillTypeName() {return "MaxCardsSkill";}
 };
 
 class TargetModSkill: public Skill {
@@ -253,6 +282,8 @@ public:
     virtual int getDistanceLimit(const Player *from, const Card *card) const;
     virtual int getExtraTargetNum(const Player *from, const Card *card) const;
 
+	virtual const char* getSkillTypeName() {return "TargetModSkill";}
+
 protected:
     QString pattern;
 };
@@ -265,6 +296,7 @@ public:
 
     virtual int getDistanceLimit(const Player *from, const Card *card) const;
 
+	virtual const char* getSkillTypeName() {return "SlashNoDistanceLimitSkill";}
 protected:
     QString name;
 };
@@ -280,6 +312,7 @@ public:
     virtual bool triggerable(const ServerPlayer *target) const;
     virtual bool trigger(TriggerEvent triggerEvent, Room *room, ServerPlayer *player, QVariant &data) const;
 
+	virtual const char* getSkillTypeName() {return "FakeMoveSkill";}
 private:
     QString name;
 };
@@ -294,6 +327,7 @@ public:
     virtual bool trigger(TriggerEvent triggerEvent, Room *room, ServerPlayer *player, QVariant &data) const;
     virtual void onSkillDetached(Room *room, ServerPlayer *player) const;
 
+	virtual const char* getSkillTypeName() {return "DetachEffectSkill";}
 private:
     QString name, pile_name;
 };
@@ -305,6 +339,8 @@ public:
     WeaponSkill(const QString &name);
 
     virtual bool triggerable(const ServerPlayer *target) const;
+
+	virtual const char* getSkillTypeName() {return "WeaponSkill";}
 };
 
 class ArmorSkill: public TriggerSkill {
@@ -314,6 +350,8 @@ public:
     ArmorSkill(const QString &name);
 
     virtual bool triggerable(const ServerPlayer *target) const;
+
+	virtual const char* getSkillTypeName() {return "ArmorSkill";}
 };
 
 class MarkAssignSkill: public GameStartSkill {
@@ -323,6 +361,8 @@ public:
     MarkAssignSkill(const QString &mark, int n);
 
     virtual void onGameStart(ServerPlayer *player) const;
+
+	virtual const char* getSkillTypeName() {return "MarkAssignSkill";}
 
 private:
     QString mark_name;
