@@ -120,6 +120,8 @@ public:
     QString findConvertFrom(const QString &general_name) const;
     bool isGeneralHidden(const QString &general_name) const;
 
+	void printAllSkills(const QString& preMsg);
+	void printSkills(const QString& preMsg, const QList<const Skill*> &);
 private:
     void _loadMiniScenarios();
     void _loadModScenarios();

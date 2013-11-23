@@ -27,6 +27,8 @@
 #include <scenario.h>
 #include <miniscenarios.h>
 
+#include "Logger.h"
+
 Engine *Sanguosha = NULL;
 
 int Engine::getMiniSceneCounts() {
@@ -60,6 +62,23 @@ void Engine::addPackage(const QString &name) {
         addPackage(pack);
     else
         qWarning("Package %s cannot be loaded!", qPrintable(name));
+}
+
+void Engine::printAllSkills(const QString& preMsg) {
+
+}
+
+void Engine::printSkills(const QString& preMsg, const QList<const Skill*> &skills ) {
+	LOG_INFO << preMsg << " print skills ======== ";
+
+	foreach (const Skill *skill, skills) {
+		Skill *mutable_skill = const_cast<Skill *>(skill);
+
+		LOG_INFO << skill->objectName() 
+			<< ", name:" << Sanguosha->translate(skill->objectName())
+			<< ", type:" << mutable_skill->getSkillTypeName();
+			//<< ", desc:" << mutable_skill->getDescription();
+	}
 }
 
 Engine::Engine()
@@ -114,6 +133,8 @@ Engine::Engine()
         Skill *mutable_skill = const_cast<Skill *>(skill);
         mutable_skill->initMediaSource();
     }
+
+	//this->printSkills(tr(__FUNCTION__), skills.values());
 }
 
 lua_State *Engine::getLuaState() const{
@@ -172,6 +193,8 @@ void Engine::addSkills(const QList<const Skill *> &all_skills) {
                 global_trigger_skills << trigger_skill;
         }
     }
+
+	//this->printSkills(tr("%1.%2").arg(__FILE__, __FUNCTION__), all_skills);
 }
 
 QList<const DistanceSkill *> Engine::getDistanceSkills() const{
