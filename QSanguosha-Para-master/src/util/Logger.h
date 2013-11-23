@@ -12,10 +12,10 @@ namespace tools {
 
 #define CURRENT_THREAD_TIME TimeUtil::getCurrentTime() << " thread(" << ThreadUtil::getCurrentThreadID() << ")"
 
-	enum LogType { LOG_ERROR, LOG_WARNING, LOG_INFO };
-
 	class Logger {
 	public:
+		enum LogType { LOG_ERROR, LOG_WARNING, LOG_INFO };
+
 		explicit Logger (const char *fname = "tools_log.txt")
 			: _numErrors(0), _numWarnings(0), _numInfos(0)
 		{
@@ -56,17 +56,18 @@ namespace tools {
 		}
 
 		// Overload << operator using log type
-		friend Logger &operator << (Logger &logger, const tools::LogType l_type) {
+		friend Logger &operator << (Logger &logger, const LogType l_type) {
 
-			*(logger._outLogFile) << "\n" << CURRENT_THREAD_TIME;
+			//*(logger._outLogFile) << "\n" << CURRENT_THREAD_TIME;
+			*(logger._outLogFile) << std::endl << CURRENT_THREAD_TIME;
 
 			switch (l_type) {
-			case tools::LogType::LOG_ERROR:
+			case Logger::LOG_ERROR:
 				*(logger._outLogFile) << "   [ERROR] ";
 				++logger._numErrors;
 				break;
 
-			case tools::LogType::LOG_WARNING:
+			case Logger::LOG_WARNING:
 				*(logger._outLogFile) << " [WARNING] ";
 				++logger._numWarnings;
 				break;
@@ -94,8 +95,6 @@ namespace tools {
 		}
 
 	private:
-		
-	private:
 		int				_numErrors;
 		int				_numWarnings;
 		int				_numInfos;
@@ -106,8 +105,8 @@ namespace tools {
 }  // namespace
 
 static tools::Logger LoggerInstance("./log.txt");
-#define LOG_INFO LoggerInstance << tools::LogType::LOG_INFO << __FILE__ << "(" << __LINE__ << "):"
-#define LOG_WARN LoggerInstance << tools::LogType::LOG_WARNING << __FILE__ << "(" << __LINE__ << "):"
-#define LOG_ERROR LoggerInstance << tools::LogType::LOG_ERROR << __FILE__ << "(" << __LINE__ << "):"
+#define LOG_INFO LoggerInstance << tools::Logger::LOG_INFO << __FILE__ << "(" << __LINE__ << "):"
+#define LOG_WARN LoggerInstance << tools::Logger::LOG_WARNING << __FILE__ << "(" << __LINE__ << "):"
+#define LOG_ERROR LoggerInstance << tools::Logger::LOG_ERROR << __FILE__ << "(" << __LINE__ << "):"
 
 #endif 
