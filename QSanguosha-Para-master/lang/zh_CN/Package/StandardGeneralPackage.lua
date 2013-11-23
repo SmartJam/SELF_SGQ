@@ -250,5 +250,15 @@ return {
 	["sujiangf"] = "素将(女)",
 	["&sujiangf"] = "素将",
 	["illustrator:sujiangf"] = "轩辕剑",
+	
+	["#test_shenzhaoyun"] = "酱油战神",
+	["test_shenzhaoyun"] = "神赵云(测试)",
+	["shenwei2"] = "神威",
+	[":shenwei2"] = "<font color=\"purple\"><b>觉醒技。</b></font>回合开始阶段，若你未受伤，你须增加1点体力上限并永久获得技能<b>“龙威”</b>(你每回复1点体力，可立即摸两张牌)。",
+	["#Shenwei2Wake"] = "回合开始，%from 未为受伤，触发“%arg”觉醒",
+	["$Shenwei2Animate"] = "image=image/animate/shenwei2.png",
+	["longwei"] = "龙威",
+	[":longwei"] = "<font color=\"blue\"><b>锁定技。</b></font>你每回复1点体力，可立即摸两张牌。",
+	
 }
 
